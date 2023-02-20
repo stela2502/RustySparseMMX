@@ -7,6 +7,8 @@ use std::io::BufRead;
 use std::path::Path;
 
 use crate::sparsedata::SparseData;
+use regex::Regex;
+
 
 pub mod sparsedata;
 
@@ -71,8 +73,12 @@ fn process_file( file:&PathBuf, sep:&str) -> SparseData {
 fn main() {
 
     let opts: Opts = Opts::parse();
+    let re = Regex::new("csv$").unwrap();
 
     for f in list_of_csv_paths( &opts.ipath ).unwrap(){
+        if ! re.is_match( f.to_str().unwrap()  ){
+            continue;
+        }
         println!("Processing file {:?}", f);
         let data = process_file( &f , &opts.sep );
         let content:[usize;3] = data.content(); 
