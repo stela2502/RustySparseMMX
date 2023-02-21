@@ -1,5 +1,5 @@
 [package]
-name = "dense_2_sparse"
+name = "dense2sparse"
 version = "0.1.0"
 edition = "2021"
 

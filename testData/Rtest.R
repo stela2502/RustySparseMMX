@@ -1,5 +1,5 @@
 library(Seurat)
-da = read.delim('testData/DenseMatrix.csv',sep="\t")
+da = read.delim('testData/DenseMatrix.csv',sep="\t", row.names=1)
 
 data = Read10X( "testData/DenseMatrix/filtered_feature_bc_matrix")
 
