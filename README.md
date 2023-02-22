@@ -53,7 +53,7 @@ Attaching SeuratObject
 [1] "OK"
 ```
 
-## Spped
+## Speed
 
 Using the 3,2G big GSE166895_postQC_mRNAraw_FL-FBM-CB.csv file from the Human Cell Atlast database (Bone -> "Blood and immune development in human fetal bone marrow and Down syndrome" )
 takes 1min 46 sec on one core of an AMD Ryzen 5 3600X 6-Core Processor using Ubuntu 22.04.1 LTS with cernel Linux 5.15.0-58-generic and a magnetic disk as storage.
