@@ -31,8 +31,8 @@ impl Data{
 		if val > 0 {
 
 			match &self.data.insert( cell_id, val ){
-				Some(val) => { 
-					panic!("something did not work {cell_id}, {val}")
+				Some(v) => { 
+					panic!("the value is not new: {val} old: {cell_id} -> {v}")
 				},
 				None => () , // all good
 			};
@@ -104,12 +104,12 @@ impl SparseData{
 
 	pub fn add_row( &mut self, val:String ){
 		self.counts_r += 1;
-		self.rows.insert( (self.counts_r), val );
+		self.rows.insert( self.counts_r, val );
 	}
 
 	pub fn add_col( &mut self, val:String ){
 		self.counts_c += 1;
-		self.header.insert( (self.counts_c), val );
+		self.header.insert( self.counts_c, val );
 	}
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
@@ -166,6 +166,8 @@ impl SparseData{
 	}
 
 	pub fn add_alevin_sparse( &mut self, dat:Vec<&str> ){
+
+		println!("add_alevin_sparse got this: {dat:?}");
 
 		let col_id = match dat[0].parse::<usize>() {
 			Ok( v ) => v,

@@ -77,7 +77,6 @@ fn main() {
    		panic!("missing file quants_mat.mtx");
    	}
 
-    
-
+    data.write_2_path( (*Path::new(&opts.ipath)).to_path_buf() , false );
 
 }
