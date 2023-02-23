@@ -89,11 +89,11 @@ impl SparseData{
 				first = false;
 				continue;
 			}
-			println!("I insert col '{cell_name}'" );
+			//println!("I insert col '{cell_name}'" );
 			self.header.insert( id, cell_name.to_string() );
 			id += 1;
 		}
-		println!("I have detected {} columns", self.header.len() );
+		//println!("I have detected {} columns", self.header.len() );
 	}
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
@@ -175,7 +175,7 @@ impl SparseData{
         }
 
         ////////////////////////////////////////////////////////////////////
-        ///  barcodes  ///
+        //  barcodes  //
         ////////////////////////////////////////////////////////////////////
 
         if  fs::remove_file(file_path.join("barcodes.tsv.gz") ).is_ok(){};
@@ -215,7 +215,7 @@ impl SparseData{
 	    }
 
         ////////////////////////////////////////////////////////////////////
-        ///  features  ///
+        //  features  //
         /////////////////////////////////////////////////////////////////////
 
         if fs::remove_file(file_path.join("features.tsv.gz") ).is_ok(){};
@@ -258,7 +258,7 @@ impl SparseData{
 
 
         ////////////////////////////////////////////////////////////////////
-        ///  matrix  ///
+        //  matrix  //
         /////////////////////////////////////////////////////////////////////
 
 
