@@ -3,6 +3,7 @@
 A rust program to convert a dense ',' or '\t' separated table to the Matrix Marked spasre matrix format.
 Only integer values are supported. Float values as provided by some databases are converted to ints.
 
+A preprint of this is available on [ResearchGate](https://www.researchgate.net/publication/368667970_dense2sparse_a_Rust_program_to_convert_published_SingleCell_dense_matrices_to_the_MatrixMarket_format)
 # Usage
 
 ```
@@ -14,10 +15,11 @@ USAGE:
     dense2sparse.exe [OPTIONS] --ipath <IPATH>
 
 OPTIONS:
-    -h, --help             Print help information
-    -i, --ipath <IPATH>    the input input path
-    -s, --sep <SEP>        the column separator str [default: ,]
-    -V, --version          Print version information
+    -h, --help                     Print help information
+    -i, --ipath <IPATH>            the input input path
+    -s, --sep <SEP>                the column separator str [default: ,]
+    -t, --transpose <TRANSPOSE>    transpose the data [default: false]
+    -V, --version                  Print version information
 ```
 
 # Install
@@ -40,6 +42,7 @@ You can of cause also use the target/release/dense_2_sparse program from the ori
 cargo build -r
 target/release/dense2sparse -i testData -s "\t"
 Rscript testData/Rtest.R
+Rscript testData/Rtest_transp.R
 ```
 
 This output is expected:
@@ -59,3 +62,10 @@ Using the 3,2G big GSE166895_postQC_mRNAraw_FL-FBM-CB.csv file from the Human Ce
 takes 1min 46 sec on one core of an AMD Ryzen 5 3600X 6-Core Processor using Ubuntu 22.04.1 LTS with cernel Linux 5.15.0-58-generic and a magnetic disk as storage.
 
 This is quite impressive - or?
+
+
+## Memory Usage
+
+![dense2sparse comparative memory usage](MemoryUsage.svg)
+
+Memory usage measured over time using top program on Linux. Shown is the top value 'RES' measured every 5 seconds for a R dense to sparse conversion [red], the dense2sparse Rust process for the same data [blue] and the loading of the sparse matrix into R [black]. The file GSE166895_postQC_mRNAraw_FL-FBM-CB.csv from \cite{humdata} was used for these measurements
