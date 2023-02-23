@@ -12,12 +12,17 @@ use std::path::Path;
 //use flate2::write::GzDecoder;
 
 
-use crate::sparsedata::SparseData;
+//use dense2sparse::sparsedata::SparseData;
+
 use regex::Regex;
 //use ascii::{AsciiString, FromAsciiError};
+use crate::sparsedata::SparseData;
 
+//use regex::Regex;
+//use ascii::{AsciiString, FromAsciiError};
 
 pub mod sparsedata;
+
 
 //use crate::SparseData;
 
