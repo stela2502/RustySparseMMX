@@ -16,12 +16,11 @@ use std::path::Path;
 
 use regex::Regex;
 //use ascii::{AsciiString, FromAsciiError};
-use crate::sparsedata::SparseData;
+ use sparsedata::sparsedata::SparseData;
 
 //use regex::Regex;
 //use ascii::{AsciiString, FromAsciiError};
 
-pub mod sparsedata;
 
 
 //use crate::SparseData;
@@ -52,7 +51,7 @@ fn list_of_csv_paths(root: &str) -> io::Result<Vec<PathBuf>> {
         let path = path?.path();
         //println!("{path:?}");
         if re.is_match( path.to_str().unwrap() ){
-            //println!("pushing");
+            //println!("pushing {path:?}");
             result.push(path.to_owned());
         }
         //if let Some("csv") = path.extension().and_then(OsStr::to_str) {

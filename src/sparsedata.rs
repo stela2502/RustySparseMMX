@@ -50,7 +50,7 @@ impl Data{
 				ret += &format!( "{} {} {}\n", self.row_id, col_id, val );
 			}
 		}
-		
+		ret.pop();
 		ret
 	}
 }
@@ -61,6 +61,8 @@ pub struct SparseData{
     data: BTreeMap<usize, Data>, // the Data
     row_id: usize, // the local gene id
     counts: usize, // how many values were stored?
+    counts_r: usize, // count for the rows
+    counts_c: usize, // cout for the columns
 }
 
 impl SparseData{
@@ -71,12 +73,16 @@ impl SparseData{
 		let data = BTreeMap::<usize, Data>::new();
 		let row_id = 1;
 		let counts = 0;
+		let counts_r = 0;
+		let counts_c= 0;
 		Self{
 			header,
 			rows,
 			data,
 			row_id,
 			counts,
+			counts_r,
+			counts_c,
 		}
 	}
 
@@ -94,6 +100,16 @@ impl SparseData{
 			id += 1;
 		}
 		//println!("I have detected {} columns", self.header.len() );
+	}
+
+	pub fn add_row( &mut self, val:String ){
+		self.counts_r += 1;
+		self.rows.insert( (self.counts_r), val );
+	}
+
+	pub fn add_col( &mut self, val:String ){
+		self.counts_c += 1;
+		self.header.insert( (self.counts_c), val );
 	}
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
@@ -147,6 +163,71 @@ impl SparseData{
 			}
 		}
 		//println!("I read {} rows {} columns and {} entries != 0", self.rows.len(), self.header.len(), self.counts);
+	}
+
+	pub fn add_alevin_sparse( &mut self, dat:Vec<&str> ){
+
+		let col_id = match dat[0].parse::<usize>() {
+			Ok( v ) => v,
+			Err(_err) => {
+				match dat[0].parse::<f32>(){
+					Ok(v) =>  { 
+						let r= v.round() ;
+						let ret = r as usize;
+						ret
+					},
+					Err(_err) => {
+						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
+						0
+					},
+				}
+			},
+		};
+		let row_id = match dat[1].parse::<usize>() {
+			Ok( v ) => v,
+			Err(_err) => {
+				match dat[1].parse::<f32>(){
+					Ok(v) =>  { 
+						let r= v.round() ;
+						let ret = r as usize;
+						ret
+					},
+					Err(_err) => {
+						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
+						0
+					},
+				}
+			},
+		};
+
+		let val = match dat[1].parse::<usize>() {
+			Ok( v ) => v,
+			Err(_err) => {
+				match dat[1].parse::<f32>(){
+					Ok(v) =>  { 
+						let r= v.round() ;
+						let ret = r as usize;
+						ret
+					},
+					Err(_err) => {
+						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
+						0
+					},
+				}
+			},
+		};
+
+		match self.data.get_mut( &row_id  ) {
+			Some( row ) => {
+				row.add( col_id, val );
+			}
+			None => {
+				let mut row = Data::new( row_id );
+				row.add( col_id, val );
+				self.data.insert(row_id , row );
+			}
+		};
+		self.counts += 1;
 	}
 
 	pub fn write_2_path( &self, main_path:PathBuf, transpose:bool ) -> Result< (), &str> {

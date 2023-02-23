@@ -10,3 +10,4 @@
     clippy::explicit_auto_deref
 )]
 
+pub mod sparsedata;
