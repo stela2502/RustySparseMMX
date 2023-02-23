@@ -63,6 +63,7 @@ pub struct SparseData{
     counts: usize, // how many values were stored?
     counts_r: usize, // count for the rows
     counts_c: usize, // cout for the columns
+    first:bool, // is this the first value added?
 }
 
 impl SparseData{
@@ -75,6 +76,7 @@ impl SparseData{
 		let counts = 0;
 		let counts_r = 0;
 		let counts_c= 0;
+		let first = true;
 		Self{
 			header,
 			rows,
@@ -83,6 +85,7 @@ impl SparseData{
 			counts,
 			counts_r,
 			counts_c,
+			first
 		}
 	}
 
@@ -114,7 +117,8 @@ impl SparseData{
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
 
-		if self.header.len() == 0{
+		if self.first {
+			self.first = false;
 			return self.add_header( dat );
 		}
 		let mut col_id = 0;
@@ -167,7 +171,7 @@ impl SparseData{
 
 	pub fn add_alevin_sparse( &mut self, dat:Vec<&str> ){
 
-		println!("add_alevin_sparse got this: {dat:?}");
+		//panic!("add_alevin_sparse got this: {dat:?}");
 
 		let col_id = match dat[0].parse::<usize>() {
 			Ok( v ) => v,
@@ -185,6 +189,11 @@ impl SparseData{
 				}
 			},
 		};
+
+		if col_id != 0 && self.first { // this is the header line
+			self.first = false;
+			return ();
+		}
 		let row_id = match dat[1].parse::<usize>() {
 			Ok( v ) => v,
 			Err(_err) => {
