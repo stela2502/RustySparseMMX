@@ -10,6 +10,9 @@ A preprint of this is available on [ResearchGate](https://www.researchgate.net/p
 dense2sparse -h
 dense2sparse 0.1.0
 Stefan L. <stefan.lang@med.lu.se>
+Convert a dense csv table to the MatrixMarket format used by 10x CellRanger. Meaning the outfiles
+are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz. To circumvent problems while importing into
+Scanpy the files are created in a folder named 'filtered_feature_bc_matrix'
 
 USAGE:
     dense2sparse.exe [OPTIONS] --ipath <IPATH>
@@ -22,6 +25,25 @@ OPTIONS:
     -V, --version                  Print version information
 ```
 
+```
+alevin210x -h
+dense2sparse 0.1.0
+Stefan L. <stefan.lang@med.lu.se>
+alevin-fry (a single cell quantification tool written in Rust) creates MatrixMarket outfiles that
+are not conform with the 10x Cellranger standard. This format is not supported by the main analyis
+packages and therfore this tool converts alevin-fry style matrices to CellRanger style MatrixMarket
+format
+
+USAGE:
+    alevin210x.exe --ipath <IPATH>
+
+OPTIONS:
+    -h, --help             Print help information
+    -i, --ipath <IPATH>    the input input path
+    -V, --version          Print version information
+```
+
+
 # Install
 
 1. Clone this repo.
@@ -31,6 +53,7 @@ In this repo you then do:
 ```
 cargo build -r
 sudo cp target/release/dense2sparse /usr/bin/
+sudo cp target/release/alevin210x /usr/bin/
 ```
 
 You can of cause also use the target/release/dense_2_sparse program from the original point or copy it somewhere else.

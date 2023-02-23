@@ -19,6 +19,11 @@ use regex::Regex;
 use sparsedata::sparsedata::SparseData;
 
 
+/// alevin-fry (a single cell quantification tool written in Rust) creates MatrixMarket
+/// outfiles that are not conform with the 10x Cellranger standard. This format is not supported
+/// by the main analyis packages and therfore this tool converts alevin-fry style matrices to
+/// CellRanger style MatrixMarket format.
+
 #[derive(Parser)]
 #[clap(version = "0.1.0", author = "Stefan L. <stefan.lang@med.lu.se>")]
 struct Opts {

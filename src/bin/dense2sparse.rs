@@ -23,8 +23,9 @@ use regex::Regex;
 
 
 
-//use crate::SparseData;
-
+/// Convert a dense csv table to the MatrixMarket format used by 10x CellRanger.
+/// Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
+/// To circumvent problems while importing into Scanpy the files are created in a folder named 'filtered_feature_bc_matrix'.
 #[derive(Parser)]
 #[clap(version = "0.1.0", author = "Stefan L. <stefan.lang@med.lu.se>")]
 struct Opts {
