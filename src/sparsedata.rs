@@ -194,6 +194,9 @@ impl SparseData{
 			self.first = false;
 			return ();
 		}
+		if col_id == 0 {
+			return ();
+		}
 		let row_id = match dat[1].parse::<usize>() {
 			Ok( v ) => v,
 			Err(_err) => {
@@ -211,10 +214,10 @@ impl SparseData{
 			},
 		};
 
-		let val = match dat[1].parse::<usize>() {
+		let val = match dat[2].parse::<usize>() {
 			Ok( v ) => v,
 			Err(_err) => {
-				match dat[1].parse::<f32>(){
+				match dat[2].parse::<f32>(){
 					Ok(v) =>  { 
 						let r= v.round() ;
 						let ret = r as usize;
