@@ -89,7 +89,7 @@ impl SparseData{
 				first = false;
 				continue;
 			}
-			//println!("I insert col {cell_name}" );
+			println!("I insert col {cell_name}" );
 			self.header.insert( id, cell_name.to_string() );
 			id += 1;
 		}
@@ -98,7 +98,7 @@ impl SparseData{
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
 
-		if self.header.is_empty(){
+		if self.header.len() == 0{
 			return self.add_header( dat );
 		}
 		let mut col_id = 0;

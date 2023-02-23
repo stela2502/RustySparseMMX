@@ -63,10 +63,6 @@ fn process_file( file:&PathBuf, sep:char ) -> SparseData {
     let mut reader = std::io::BufReader::new(fi);
 
     let mut data =SparseData::new();
-
-    let mut line = "".to_string();
-    reader.read_line( &mut line).unwrap();
-
     
     for line in reader.lines() {
         data.add_data( line.unwrap().split( sep ).collect() );
@@ -88,7 +84,6 @@ fn process_file_gz_ascii( file:&PathBuf, sep:char ) -> SparseData {
     reader.read_to_string( &mut buffer ).unwrap();
     
     for line in buffer.lines() {
-
         data.add_data( line.split( sep ).collect() );
     }
     data
@@ -103,22 +98,23 @@ fn process_file_gz( file:&PathBuf, sep:char) -> SparseData {
 
     let mut data =SparseData::new();
 
-    for line in reader.lines() {
-        match line {
-            Ok(line) => {
-                data.add_data( line.split( sep ).collect() );
-            },
-            Err(err) => {
-                data.add_data( line.as_utf8().split( sep ).collect() );
-                // if err.kind() == std::io::ErrorKind::InvalidData {
-                //     // asume ascii here!
-                //     return process_file_gz_ascii( file, sep );
-                // }else {
-                //     panic!("Unexpected error reading the gz file: {err:?}");
-                // }
-            }
-        };  
-    }
+    panic!("Sorry gz files are not supported here");
+    // for line in reader.lines() {
+    //     match line {
+    //         Ok(line) => {
+    //             data.add_data( line.split( sep ).collect() );
+    //         },
+    //         Err(err) => {
+    //             data.add_data( line.as_utf8().split( sep ).collect() );
+    //             // if err.kind() == std::io::ErrorKind::InvalidData {
+    //             //     // asume ascii here!
+    //             //     return process_file_gz_ascii( file, sep );
+    //             // }else {
+    //             //     panic!("Unexpected error reading the gz file: {err:?}");
+    //             // }
+    //         }
+    //     };  
+    // }
     data
 }
 
