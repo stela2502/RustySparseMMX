@@ -38,11 +38,19 @@ impl Data{
 			};
 		}
 	}
-	pub fn to_str( &self ) -> String {
+	pub fn to_str( &self , transpose:bool ) -> String {
 		let mut ret = "".to_string();
-		for ( col_id, val ) in &self.data{
-			ret += &format!( "{} {} {}\n", self.row_id, col_id, val );
+		if transpose{
+			for ( col_id, val ) in &self.data{
+				ret += &format!( "{} {} {}\n", col_id, self.row_id, val );
+			}
 		}
+		else {
+			for ( col_id, val ) in &self.data{
+				ret += &format!( "{} {} {}\n", self.row_id, col_id, val );
+			}
+		}
+		
 		ret
 	}
 }
@@ -89,6 +97,10 @@ impl SparseData{
 	}
 
 	pub fn add_data (&mut self,  dat:Vec<&str> ){
+
+		if self.header.is_empty(){
+			return self.add_header( dat );
+		}
 		let mut col_id = 0;
 
 		let mut row_good = true;
@@ -137,7 +149,7 @@ impl SparseData{
 		//println!("I read {} rows {} columns and {} entries != 0", self.rows.len(), self.header.len(), self.counts);
 	}
 
-	pub fn write_2_path( &self, main_path:PathBuf ) -> Result< (), &str> {
+	pub fn write_2_path( &self, main_path:PathBuf, transpose:bool ) -> Result< (), &str> {
 
 
 		let re = Regex::new(r"\s+").unwrap();
@@ -233,7 +245,7 @@ impl SparseData{
         let mut writer = BufWriter::new(file1);
 
         match writeln!( writer, "%%MatrixMarket matrix coordinate integer general\n{}", 
-             self.mtx_counts() ){
+             self.mtx_counts( transpose ) ){
             Ok(_) => (),
             Err(err) => {
                 eprintln!("write error: {err}");
@@ -245,7 +257,7 @@ impl SparseData{
 
         let mut entries = 0;
         for row in self.data.values() {
-            match writeln!( writer, "{}", row.to_str() ){
+            match writeln!( writer, "{}", row.to_str( transpose) ){
                 Ok(_) => {entries += 1;},
                 Err(err) => {
                     eprintln!("write error: {err}");
@@ -262,8 +274,11 @@ impl SparseData{
 		return [ self.rows.len(), self.header.len(), self.counts ];
 	}
 
-	pub fn mtx_counts(&self) -> String{
+	pub fn mtx_counts(&self, transpose:bool) -> String{
 		let content:[usize;3] = self.content(); 
+		if transpose{
+			return format!("{} {} {}",  content[1], content[0], content[2] )
+		} 
 		format!("{} {} {}",  content[0], content[1], content[2] )
 	}
 	

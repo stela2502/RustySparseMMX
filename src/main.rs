@@ -1,13 +1,19 @@
 use clap::Parser;
 
-use std::{ fs, io, path::PathBuf, ffi::OsStr };
+use std::{ fs, io, path::PathBuf };
 //use std::collections::BTreeMap;
 
 use std::io::BufRead;
 use std::path::Path;
+use std::io::BufReader;
+use std::io::Read;
+
+use flate2::write::GzDecoder;
+
 
 use crate::sparsedata::SparseData;
 use regex::Regex;
+use ascii::{AsciiString, FromAsciiError};
 
 
 pub mod sparsedata;
@@ -23,6 +29,9 @@ struct Opts {
     /// the column separator str
     #[clap(default_value=",", short, long)]
     sep: String,
+    /// transpose the data
+    #[clap(default_value="false", short, long)]
+    transpose:String,
 }
 
 
@@ -30,17 +39,25 @@ struct Opts {
 /// from https://stackoverflow.com/questions/51418859/how-do-i-list-a-folder-and-return-all-the-file-names-of-a-specific-file-type
 fn list_of_csv_paths(root: &str) -> io::Result<Vec<PathBuf>> {
     let mut result = vec![];
+    let re = Regex::new("csv.?g?z?$").unwrap();
 
     for path in fs::read_dir(root)? {
         let path = path?.path();
-        if let Some("csv") = path.extension().and_then(OsStr::to_str) {
+        //println!("{path:?}");
+        if re.is_match( path.to_str().unwrap() ){
+            //println!("pushing");
             result.push(path.to_owned());
         }
+        //if let Some("csv") = path.extension().and_then(OsStr::to_str) {
+        //    result.push(path.to_owned());
+        //}
     }
     Ok(result)
 }
 
-fn process_file( file:&PathBuf, sep:&str) -> SparseData {
+fn process_file( file:&PathBuf, sep:char ) -> SparseData {
+
+
 
     let fi = std::fs::File::open( file ).unwrap();
     let mut reader = std::io::BufReader::new(fi);
@@ -49,44 +66,93 @@ fn process_file( file:&PathBuf, sep:&str) -> SparseData {
 
     let mut line = "".to_string();
     reader.read_line( &mut line).unwrap();
-    let vec:Vec<&str> ; //= line.split( '\t' ).collect();
 
-    if sep == "\\t" {
-        vec = line.split( '\t' ).collect();
-        data.add_header( vec );
-        for line in reader.lines() {
-            data.add_data( line.unwrap().split('\t').collect() );
-        }
-    }
-    else {
-        vec = line.split( sep ).collect();
-        data.add_header( vec );
-        for line in reader.lines() {
-            //let mut line = line.unwrap();
-            data.add_data( line.unwrap().split( sep ).collect() );
-        }
+    
+    for line in reader.lines() {
+        data.add_data( line.unwrap().split( sep ).collect() );
     }
     
+    data
+}
+
+fn process_file_gz_ascii( file:&PathBuf, sep:char ) -> SparseData {
+    let fi = std::fs::File::open( file ).unwrap();
+    let gz = GzDecoder::new(fi);
+    let mut reader = BufReader::new(gz);
+
+    println!("I am processing the ascii data");
+
+    let mut data =SparseData::new();
+
+    let mut buffer:String = String::new();
+    reader.read_to_string( &mut buffer ).unwrap();
+    
+    for line in buffer.lines() {
+
+        data.add_data( line.split( sep ).collect() );
+    }
+    data
+}
+
+
+fn process_file_gz( file:&PathBuf, sep:char) -> SparseData {
+
+    let fi = std::fs::File::open( file ).unwrap();
+    let gz = GzDecoder::new(fi);
+    let reader = std::io::BufReader::new(gz);
+
+    let mut data =SparseData::new();
+
+    for line in reader.lines() {
+        match line {
+            Ok(line) => {
+                data.add_data( line.split( sep ).collect() );
+            },
+            Err(err) => {
+                data.add_data( line.as_utf8().split( sep ).collect() );
+                // if err.kind() == std::io::ErrorKind::InvalidData {
+                //     // asume ascii here!
+                //     return process_file_gz_ascii( file, sep );
+                // }else {
+                //     panic!("Unexpected error reading the gz file: {err:?}");
+                // }
+            }
+        };  
+    }
     data
 }
 
 fn main() {
 
     let opts: Opts = Opts::parse();
-    let re = Regex::new("csv$").unwrap();
+    let re2 = Regex::new("gz$").unwrap();
+    let mut sep = '\t';
+    if &opts.sep != "\\t"{
+        sep = opts.sep.chars().next().unwrap(); 
+    }
 
     for f in list_of_csv_paths( &opts.ipath ).unwrap(){
-        if ! re.is_match( f.to_str().unwrap()  ){
-            continue;
-        }
+
         println!("Processing file {:?}", f);
-        let data = process_file( &f , &opts.sep );
+
+        let data = match re2.is_match( f.to_str().unwrap()  ){
+            true  => {
+                process_file_gz( &f , sep )
+            }
+            false => {
+                process_file( &f , sep )
+            }
+        };
+        
         let content:[usize;3] = data.content(); 
 
         println!("{} columns {} rows and {} data points read", content[0], content[1], content[2] );
 
-        data.write_2_path( Path::new( opts.ipath.as_str() ).join( &f.file_stem().unwrap() ) ).unwrap();
+        let ofile = Path::new( opts.ipath.as_str() ).join( &f.file_stem().unwrap() );
 
+        data.write_2_path( ofile, opts.transpose != "false"  ).unwrap();
+
+        println!("finished with {f:?}");
     }
 
 }
