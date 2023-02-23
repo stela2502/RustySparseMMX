@@ -58,7 +58,6 @@ fn list_of_csv_paths(root: &str) -> io::Result<Vec<PathBuf>> {
 fn process_file( file:&PathBuf, sep:char ) -> SparseData {
 
 
-
     let fi = std::fs::File::open( file ).unwrap();
     let mut reader = std::io::BufReader::new(fi);
 
@@ -98,7 +97,7 @@ fn process_file_gz( file:&PathBuf, sep:char) -> SparseData {
 
     let mut data =SparseData::new();
 
-    panic!("Sorry gz files are not supported here");
+    eprintln!("Sorry gz files are not supported here");
     // for line in reader.lines() {
     //     match line {
     //         Ok(line) => {

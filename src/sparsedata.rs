@@ -89,7 +89,7 @@ impl SparseData{
 				first = false;
 				continue;
 			}
-			println!("I insert col {cell_name}" );
+			println!("I insert col '{cell_name}'" );
 			self.header.insert( id, cell_name.to_string() );
 			id += 1;
 		}
@@ -175,10 +175,7 @@ impl SparseData{
         }
 
         ////////////////////////////////////////////////////////////////////
-        
-
-
-
+        ///  barcodes  ///
         ////////////////////////////////////////////////////////////////////
 
         if  fs::remove_file(file_path.join("barcodes.tsv.gz") ).is_ok(){};
@@ -193,17 +190,32 @@ impl SparseData{
         let mut writer_b = BufWriter::new(file2);
 
 
-        
-        for name in self.header.values() {
-        	let na = &re.replace_all( name, "_");
-            match writeln!( writer_b, "{na}"){
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("write error: {err}" );
-                    return Err::<(), &str>("feature could not be written")   
-                }
-            }
-        }
+        if transpose {
+        	for name in self.rows.values() {
+	        	let na = &re.replace_all( name, "_");
+	            match writeln!( writer_b, "{na}"){
+	                Ok(_) => (),
+	                Err(err) => {
+	                    eprintln!("write error: {err}" );
+	                    return Err::<(), &str>("feature could not be written")   
+	                }
+	            }
+	        }
+        }else{
+	        for name in self.header.values() {
+	        	let na = &re.replace_all( name, "_");
+	            match writeln!( writer_b, "{na}"){
+	                Ok(_) => (),
+	                Err(err) => {
+	                    eprintln!("write error: {err}" );
+	                    return Err::<(), &str>("feature could not be written")   
+	                }
+	            }
+	        }
+	    }
+
+        ////////////////////////////////////////////////////////////////////
+        ///  features  ///
         /////////////////////////////////////////////////////////////////////
 
         if fs::remove_file(file_path.join("features.tsv.gz") ).is_ok(){};
@@ -217,19 +229,36 @@ impl SparseData{
         let file3 = GzEncoder::new(file_f, Compression::default());
         let mut writer_f = BufWriter::new(file3);
 
-        for  name in self.rows.values() {
-        	//let &mut na = name.to_string();
-        	let na = &re.replace_all( name, "_");
-            match writeln!( writer_f, "{na}\t{na}\tGene Expression"  ){
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("write error: {err}" );
-                    return Err::<(), &str>("feature could not be written")   
-                }
-            }
+        if transpose {
+        	for  name in self.header.values() {
+	        	//let &mut na = name.to_string();
+	        	let na = &re.replace_all( name, "_");
+	            match writeln!( writer_f, "{na}\t{na}\tGene Expression"  ){
+	                Ok(_) => (),
+	                Err(err) => {
+	                    eprintln!("write error: {err}" );
+	                    return Err::<(), &str>("feature could not be written")   
+	                }
+	            }
+	        }
+        }else {
+        	for  name in self.rows.values() {
+	        	//let &mut na = name.to_string();
+	        	let na = &re.replace_all( name, "_");
+	            match writeln!( writer_f, "{na}\t{na}\tGene Expression"  ){
+	                Ok(_) => (),
+	                Err(err) => {
+	                    eprintln!("write error: {err}" );
+	                    return Err::<(), &str>("feature could not be written")   
+	                }
+	            }
+	        }
         }
+        
 
 
+        ////////////////////////////////////////////////////////////////////
+        ///  matrix  ///
         /////////////////////////////////////////////////////////////////////
 
 
