@@ -81,7 +81,7 @@ fn process_file_gz( file:&PathBuf, sep:char) -> SparseData {
 
     let mut data =SparseData::new();
 
-    eprintln!("Sorry gz files are not supported here {file:?} {sep:?}");
+    //eprintln!("Sorry gz files are not supported here {file:?} {sep:?}");
     for line in reader.lines() {
         match line {
             Ok(line) => {
@@ -127,10 +127,18 @@ fn main() {
         let content:[usize;3] = data.content(); 
 
         println!("{} columns {} rows and {} data points read", content[0], content[1], content[2] );
+        
+        let path_str = &f.file_stem().unwrap().to_str().unwrap();
+        //println!("{path_str}");
 
-        let ofile = Path::new( opts.ipath.as_str() ).join( &f.file_stem().unwrap() );
+        let ofile = match  path_str.strip_suffix(".csv"){
+            Some(n) => {
+                Path::new( opts.ipath.as_str() ).join( n )
+            },
+            None => Path::new( opts.ipath.as_str() ).join( path_str),
+        };
 
-        data.write_2_path( ofile, opts.transpose != "false"  ).unwrap();
+        data.write_2_path( (&ofile).to_path_buf(), opts.transpose != "false"  ).unwrap();
 
         println!("finished with {f:?}");
     }

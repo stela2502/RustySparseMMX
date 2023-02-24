@@ -249,6 +249,7 @@ impl SparseData{
 
 		let re = Regex::new(r"\s+").unwrap();
 
+
         if ! &main_path.exists() {
             match fs::create_dir ( main_path.clone() ){
                 Ok(_file) => (),
