@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use std::{ fs, io, path::PathBuf };
+//use std::{ fs, io, path::PathBuf };
 //use std::collections::BTreeMap;
 
 use std::io::BufRead;
@@ -12,10 +12,6 @@ use std::path::Path;
 //use flate2::write::GzDecoder;
 
 
-//use dense2sparse::sparsedata::SparseData;
-
-use regex::Regex;
-//use ascii::{AsciiString, FromAsciiError};
 use sparsedata::sparsedata::SparseData;
 
 
