@@ -6,9 +6,6 @@ use std::{ fs, io, path::PathBuf };
 use std::io::BufRead;
 use std::path::Path;
 
-
-use std::io::BufReader;
-use std::io::Read;
 use flate2::read::GzDecoder;
 
 
@@ -72,24 +69,6 @@ fn process_file( file:&PathBuf, sep:char ) -> SparseData {
         data.add_data( line.unwrap().split( sep ).collect() );
     }
     
-    data
-}
-
-fn process_file_gz_ascii( file:&PathBuf, sep:char ) -> SparseData {
-    let fi = std::fs::File::open( file ).unwrap();
-    let gz = GzDecoder::new(fi);
-    let mut reader = BufReader::new(gz);
-
-    println!("I am processing the ascii data");
-
-    let mut data =SparseData::new();
-
-    let mut buffer:String = String::new();
-    reader.read_to_string( &mut buffer ).unwrap();
-    
-    for line in buffer.lines() {
-        data.add_data( line.split( sep ).collect() );
-    }
     data
 }
 

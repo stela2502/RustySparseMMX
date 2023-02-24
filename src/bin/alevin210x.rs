@@ -40,8 +40,8 @@ fn main() {
     let cols = Path::new( &opts.ipath).join("quants_mat_cols.txt");
     if cols.exists(){
     	let fi = std::fs::File::open( cols ).unwrap();
-    	let readerC = std::io::BufReader::new(fi);
-    	for line in readerC.lines() {
+    	let reader_c = std::io::BufReader::new(fi);
+    	for line in reader_c.lines() {
     		data.add_row(  line.unwrap());
     	}
     }
@@ -54,8 +54,8 @@ fn main() {
    	let rows = Path::new( &opts.ipath).join("quants_mat_rows.txt");
     if rows.exists(){
     	let fi = std::fs::File::open( rows ).unwrap();
-    	let readerR = std::io::BufReader::new(fi);
-    	for line in readerR.lines() {
+    	let reader_r = std::io::BufReader::new(fi);
+    	for line in reader_r.lines() {
     		data.add_col( line.unwrap());
     	}
     }
@@ -69,8 +69,8 @@ fn main() {
     let mtx = Path::new( &opts.ipath).join("quants_mat.mtx");
     if mtx.exists(){
     	let fi = std::fs::File::open( mtx ).unwrap();
-    	let readerM = std::io::BufReader::new(fi);
-    	for line in readerM.lines() {
+    	let reader_m = std::io::BufReader::new(fi);
+    	for line in reader_m.lines() {
     		data.add_alevin_sparse( line.unwrap().split( ' ' ).collect()  )
     	}
     }
@@ -78,6 +78,6 @@ fn main() {
    		panic!("missing file quants_mat.mtx");
    	}
 
-    data.write_2_path( (*Path::new(&opts.ipath)).to_path_buf() , false );
+    data.write_2_path( (*Path::new(&opts.ipath)).to_path_buf() , false ).unwrap();
 
 }
