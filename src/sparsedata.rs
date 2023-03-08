@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 use std::fs::File;
 use std::fs;
@@ -58,6 +59,7 @@ impl Data{
 pub struct SparseData{    
     header: BTreeMap<usize, String>, // the col names
     rows:  BTreeMap<usize, String>, // the row names
+    rownames: HashMap<String>, // a helper for the add_chimera function
     data: BTreeMap<usize, Data>, // the Data
     row_id: usize, // the local gene id
     counts: usize, // how many values were stored?
@@ -72,6 +74,7 @@ impl SparseData{
 		let header = BTreeMap::<usize, String>::new();
 		let rows = BTreeMap::<usize, String>::new();
 		let data = BTreeMap::<usize, Data>::new();
+		let rownames = HashMap<String>::new();
 		let row_id = 1;
 		let counts = 0;
 		let counts_r = 0;
@@ -80,6 +83,7 @@ impl SparseData{
 		Self{
 			header,
 			rows,
+			rownames,
 			data,
 			row_id,
 			counts,
@@ -167,6 +171,22 @@ impl SparseData{
 			}
 		}
 		//println!("I read {} rows {} columns and {} entries != 0", self.rows.len(), self.header.len(), self.counts);
+	}
+
+	pub fn add_chimera(&mut self, dat:Vec<&str> ){
+
+		let colnames = HashMap<Sting>::new();
+		let rownames = HashMap<String>::new();
+		let mut col_id = 0;
+		let mut row_id:usize;
+		if dat.len() != 5{
+			panic!("the data does not consist of exactly 5 entries: {:?}", dat )
+		}
+		if colnames.insert(dat[0].to_string()){
+			col_id += 1;
+			self.header.insert( col_id, dat[0].to_string() );
+		}
+		row_id = self.
 	}
 
 	pub fn add_alevin_sparse( &mut self, dat:Vec<&str> ){
