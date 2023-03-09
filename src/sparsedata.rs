@@ -1,5 +1,5 @@
 use std::collections::BTreeMap;
-use std::collections::HashMap;
+//use std::collections::HashSet;
 
 use std::fs::File;
 use std::fs;
@@ -54,12 +54,16 @@ impl Data{
 		ret.pop();
 		ret
 	}
+	pub fn len(&self) -> usize{
+		self.data.len()
+	}
 }
 
 pub struct SparseData{    
     header: BTreeMap<usize, String>, // the col names
     rows:  BTreeMap<usize, String>, // the row names
-    rownames: HashMap<String>, // a helper for the add_chimera function
+    rownames: BTreeMap<String, usize>, // a helper for the add_chimera function
+    last:String, // the last read value for either reading genes in a row or cell in a row (chimera) 
     data: BTreeMap<usize, Data>, // the Data
     row_id: usize, // the local gene id
     counts: usize, // how many values were stored?
@@ -68,22 +72,31 @@ pub struct SparseData{
     first:bool, // is this the first value added?
 }
 
+impl Default for SparseData {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+
 impl SparseData{
 
 	pub fn new() ->Self {
 		let header = BTreeMap::<usize, String>::new();
 		let rows = BTreeMap::<usize, String>::new();
 		let data = BTreeMap::<usize, Data>::new();
-		let rownames = HashMap<String>::new();
+		let rownames = BTreeMap::<String, usize>::new();
 		let row_id = 1;
 		let counts = 0;
 		let counts_r = 0;
 		let counts_c= 0;
 		let first = true;
+		let last = "".to_string();
 		Self{
 			header,
 			rows,
 			rownames,
+			last,
 			data,
 			row_id,
 			counts,
@@ -144,8 +157,7 @@ impl SparseData{
 						match x.parse::<f32>(){
 							Ok(v) =>  { 
 								let r= v.round() ;
-								let ret = r as usize;
-								ret
+								r as usize
 							},
 							Err(_err) => {
 								//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
@@ -175,18 +187,48 @@ impl SparseData{
 
 	pub fn add_chimera(&mut self, dat:Vec<&str> ){
 
-		let colnames = HashMap<Sting>::new();
-		let rownames = HashMap<String>::new();
-		let mut col_id = 0;
-		let mut row_id:usize;
 		if dat.len() != 5{
 			panic!("the data does not consist of exactly 5 entries: {:?}", dat )
 		}
-		if colnames.insert(dat[0].to_string()){
-			col_id += 1;
-			self.header.insert( col_id, dat[0].to_string() );
+
+		if *dat[0].to_string() != self.last {
+			//println!("Insert a new column {} with last {}", dat[0], self.last);
+			self.last = dat[0].to_string();
+			//println!("Last now is this: {}", self.last);
+			self.counts_c += 1;
+			self.header.insert( self.counts_c, self.last.to_string() );
 		}
-		row_id = self.
+		let r_id:usize = match self.rownames.get( &dat[2].to_string() ){
+			Some(rid) => *rid,
+			None => {
+				// now I need to add this entry
+				self.counts_r += 1;
+				self.rownames.insert( dat[2].to_string(), self.counts_r );
+				self.rows.insert( self.counts_r, dat[2].to_string() );
+				self.counts_r
+			}
+		};
+		//println!("I got this row id {r_id}");
+		match dat[4].parse::<usize>(){
+			Ok(val) => {
+				match self.data.get_mut( &r_id  ) {
+					Some( row ) => {
+						println!("gene row already exists! {r_id}, {}, {val}", self.counts_c);
+						row.add( self.counts_c, val );
+					}
+					None => {
+						//println!("Adding a new row: {r_id} col_id {} and val {val}", self.counts_c );
+						let mut row = Data::new( r_id );
+						row.add( self.counts_c, val );
+						self.data.insert(self.row_id , row );
+					}
+				};
+				//println!("added value {val} for row {r_id} and col {}",self.counts_c);
+				self.counts += 1;
+			},
+			Err(e) => panic!("I could not convert this to int: {} error {e:?}", dat[4] )
+		};
+
 	}
 
 	pub fn add_alevin_sparse( &mut self, dat:Vec<&str> ){
@@ -199,8 +241,7 @@ impl SparseData{
 				match dat[0].parse::<f32>(){
 					Ok(v) =>  { 
 						let r= v.round() ;
-						let ret = r as usize;
-						ret
+						r as usize
 					},
 					Err(_err) => {
 						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
@@ -212,10 +253,10 @@ impl SparseData{
 
 		if col_id != 0 && self.first { // this is the header line
 			self.first = false;
-			return ();
+			return;
 		}
 		if col_id == 0 {
-			return ();
+			return;
 		}
 		let row_id = match dat[1].parse::<usize>() {
 			Ok( v ) => v,
@@ -223,8 +264,7 @@ impl SparseData{
 				match dat[1].parse::<f32>(){
 					Ok(v) =>  { 
 						let r= v.round() ;
-						let ret = r as usize;
-						ret
+						r as usize
 					},
 					Err(_err) => {
 						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
@@ -240,8 +280,7 @@ impl SparseData{
 				match dat[2].parse::<f32>(){
 					Ok(v) =>  { 
 						let r= v.round() ;
-						let ret = r as usize;
-						ret
+						r as usize
 					},
 					Err(_err) => {
 						//eprintln!("I could not parse '{x}' to usize or f32 {err:?}");
@@ -403,7 +442,10 @@ impl SparseData{
         let mut entries = 0;
         for row in self.data.values() {
             match writeln!( writer, "{}", row.to_str( transpose) ){
-                Ok(_) => {entries += 1;},
+                Ok(_) => {
+                	entries += row.data.len();
+                	println!("{}", row.to_str( transpose));
+                },
                 Err(err) => {
                     eprintln!("write error: {err}");
                     return Err::<(), &str>("cell data could not be written")   
@@ -411,12 +453,18 @@ impl SparseData{
             };
 
         }
-        println!( "sparse Matrix: {} cell(s), {} gene(s) and {} entries written to path {:?}; ", self.header.len(), self.rows.len(), entries, file_path.into_os_string().into_string());
+        println!( "sparse Matrix: {} cell(s), {} gene(s) and {} entries written to path {:?}; ", 
+        	self.header.len(), self.rows.len(), entries, file_path.into_os_string().into_string());
         Ok(())
 	}
 
 	pub fn content(&self)  -> [usize;3] {
-		return [ self.rows.len(), self.header.len(), self.counts ];
+		let mut count = 0;
+		for row in self.data.values() {
+			count += row.len()
+		}
+		//[ self.rows.len(), self.header.len(), self.counts ]
+		[ self.rows.len(), self.header.len(), count ]
 	}
 
 	pub fn mtx_counts(&self, transpose:bool) -> String{

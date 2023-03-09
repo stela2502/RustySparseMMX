@@ -66,7 +66,14 @@ fn process_file( file:&PathBuf, sep:char ) -> SparseData {
     let mut data =SparseData::new();
     
     for line in reader.lines() {
-        data.add_data( line.unwrap().split( sep ).collect() );
+        match line {
+            Ok(line) => {
+                data.add_data( line.split( sep ).collect() );
+            },
+            Err(err) => {
+                panic!("Unexpected error reading the csv file: {err:?}");
+            }
+        }
     }
     
     data
@@ -138,7 +145,7 @@ fn main() {
             None => Path::new( opts.ipath.as_str() ).join( path_str),
         };
 
-        data.write_2_path( (&ofile).to_path_buf(), opts.transpose != "false"  ).unwrap();
+        data.write_2_path( (ofile).to_path_buf(), opts.transpose != "false"  ).unwrap();
 
         println!("finished with {f:?}");
     }

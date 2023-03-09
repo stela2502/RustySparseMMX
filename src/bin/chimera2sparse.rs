@@ -68,9 +68,17 @@ fn process_file( file:&PathBuf, sep:char ) -> SparseData {
     let mut data =SparseData::new();
     
     for line in reader.lines() {
-        data.add_chimera( line.unwrap().split( sep ).collect() );
+        match line {
+            Ok(line) => {
+                data.add_chimera( line.split( sep ).collect() );
+            },
+            Err(err) => {
+                panic!("Unexpected error reading the csv file: {err:?}");
+            }
+        }
     }
-    
+    let con = data.content();
+    println!("I have read {} rows and {} cols and {} values", con[1], con[0], con[2] );
     data
 }
 
@@ -87,7 +95,7 @@ fn process_file_gz( file:&PathBuf, sep:char) -> SparseData {
     for line in reader.lines() {
         match line {
             Ok(line) => {
-                data.add_data( line.split( sep ).collect() );
+                data.add_chimera( line.split( sep ).collect() );
             },
             Err(err) => {
                 panic!("Unexpected error reading the gz file: {err:?}");
@@ -140,7 +148,7 @@ fn main() {
             None => Path::new( opts.ipath.as_str() ).join( path_str),
         };
 
-        data.write_2_path( (&ofile).to_path_buf(), opts.transpose != "false"  ).unwrap();
+        data.write_2_path( (ofile).to_path_buf(), opts.transpose != "false"  ).unwrap();
 
         println!("finished with {f:?}");
     }
