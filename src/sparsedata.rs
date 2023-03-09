@@ -32,8 +32,10 @@ impl Data{
 		if val > 0 {
 
 			match &self.data.insert( cell_id, val ){
-				Some(v) => { 
-					panic!("the value is not new: {val} old: {cell_id} -> {v}")
+				Some(v) => {
+					// I think it would make to sum this up here...
+					&self.data.insert( cell_id, val + v )
+					//panic!("the value is not new: {val} old: {cell_id} -> {v}")
 				},
 				None => () , // all good
 			};

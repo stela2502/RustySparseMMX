@@ -54,6 +54,7 @@ In this repo you then do:
 cargo build -r
 sudo cp target/release/dense2sparse /usr/bin/
 sudo cp target/release/alevin210x /usr/bin/
+sudo cp target/release/chimera2sparse /usr/bin/
 ```
 
 You can of cause also use the target/release/dense_2_sparse program from the original point or copy it somewhere else.

@@ -18,7 +18,7 @@ use regex::Regex;
 
 
 
-/// Convert chimear of a sparse table to CellRangers mMatrixMarket format.
+/// Convert chimeric mess of a sparse table to CellRangers MatrixMarket format.
 /// The in data is a merge of barcodes and features info followed by the expression value for the specific combination.
 /// In other words a total waste of storage space.
 /// Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
