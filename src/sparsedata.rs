@@ -213,14 +213,14 @@ impl SparseData{
 			Ok(val) => {
 				match self.data.get_mut( &r_id  ) {
 					Some( row ) => {
-						println!("gene row already exists! {r_id}, {}, {val}", self.counts_c);
+						//println!("gene row already exists! {r_id}, {}, {val}", self.counts_c);
 						row.add( self.counts_c, val );
 					}
 					None => {
 						//println!("Adding a new row: {r_id} col_id {} and val {val}", self.counts_c );
 						let mut row = Data::new( r_id );
 						row.add( self.counts_c, val );
-						self.data.insert(self.row_id , row );
+						self.data.insert(r_id , row );
 					}
 				};
 				//println!("added value {val} for row {r_id} and col {}",self.counts_c);
@@ -444,7 +444,7 @@ impl SparseData{
             match writeln!( writer, "{}", row.to_str( transpose) ){
                 Ok(_) => {
                 	entries += row.data.len();
-                	println!("{}", row.to_str( transpose));
+                	//println!("{}", row.to_str( transpose));
                 },
                 Err(err) => {
                     eprintln!("write error: {err}");

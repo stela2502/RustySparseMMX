@@ -11,8 +11,9 @@ data = Read10X( "testData/chimera/cell2/filtered_feature_bc_matrix")
 
 a = as.matrix(df)
 a = matrix(as.numeric(a), ncol=ncol(df))
+a[which(is.na(a))] = 0
 sp = Matrix::Matrix( a, sparse=TRUE) 
-
+sp = Matrix::drop0(sp)
 rownames(sp) = rownames(df)
 
 if ( length( all.equal( data, Matrix::Matrix( sp ) ) == 1 ) ){

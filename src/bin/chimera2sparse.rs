@@ -134,9 +134,8 @@ fn main() {
             }
         };
         
-        let content:[usize;3] = data.content(); 
-
-        println!("{} columns {} rows and {} data points read", content[0], content[1], content[2] );
+        //let content:[usize;3] = data.content(); 
+        //println!("{} columns {} rows and {} data points read", content[0], content[1], content[2] );
         
         let path_str = &f.file_stem().unwrap().to_str().unwrap();
         //println!("{path_str}");
