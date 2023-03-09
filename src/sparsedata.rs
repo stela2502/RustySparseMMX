@@ -34,7 +34,7 @@ impl Data{
 			match &self.data.insert( cell_id, val ){
 				Some(v) => {
 					// I think it would make to sum this up here...
-					&self.data.insert( cell_id, val + v )
+					let _ = &self.data.insert( cell_id, val + v );
 					//panic!("the value is not new: {val} old: {cell_id} -> {v}")
 				},
 				None => () , // all good
