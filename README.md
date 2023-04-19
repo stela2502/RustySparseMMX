@@ -25,24 +25,6 @@ OPTIONS:
     -V, --version                  Print version information
 ```
 
-```
-alevin210x -h
-dense2sparse 0.1.0
-Stefan L. <stefan.lang@med.lu.se>
-alevin-fry (a single cell quantification tool written in Rust) creates MatrixMarket outfiles that
-are not conform with the 10x Cellranger standard. This format is not supported by the main analyis
-packages and therfore this tool converts alevin-fry style matrices to CellRanger style MatrixMarket
-format
-
-USAGE:
-    alevin210x.exe --ipath <IPATH>
-
-OPTIONS:
-    -h, --help             Print help information
-    -i, --ipath <IPATH>    the input input path
-    -V, --version          Print version information
-```
-
 
 # Install
 
@@ -53,7 +35,7 @@ In this repo you then do:
 ```
 cargo build -r
 sudo cp target/release/dense2sparse /usr/bin/
-sudo cp target/release/alevin210x /usr/bin/
+#sudo cp target/release/alevin210x /usr/bin/
 sudo cp target/release/chimera2sparse /usr/bin/
 ```
 
