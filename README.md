@@ -73,4 +73,11 @@ This is quite impressive - or?
 
 ![rusty_sparse_mmx comparative memory usage](MemoryUsage.svg)
 
-Memory usage measured over time using top program on Linux. Shown is the top value 'RES' measured every 5 seconds for a R dense to sparse conversion [red], the rusty_sparse_mmx Rust process for the same data [blue] and the loading of the sparse matrix into R [black]. The file GSE166895_postQC_mRNAraw_FL-FBM-CB.csv from \cite{humdata} was used for these measurements
+Memory usage measured over time using top program on Linux. Shown is the top value 'RES' measured every 5 seconds for a R dense to sparse conversion [red], the rusty_sparse_mmx Rust process for the same data [blue] and the loading of the sparse matrix into R [black]. The file GSE166895_postQC_mRNAraw_FL-FBM-CB.csv from [The Human Cell Atlas / Data] was used for these measurements
+
+
+# References
+
+The Human Cell Atlas / Data. *Blood and immune development in human
+fetal bone marrow and Down syndrome.* 2022. url:
+https://data.humancellatlas.org/explore/projects/04ad400c-58cb-40a5-bc2b-2279e13a910b/m/project-matrices
