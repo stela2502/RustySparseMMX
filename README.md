@@ -71,6 +71,6 @@ This is quite impressive - or?
 
 ## Memory Usage
 
-![rusty_sparse_mmx comparative memory usage](MemoryUsage)
+![rusty_sparse_mmx comparative memory usage](MemoryUsage.svg)
 
 Memory usage measured over time using top program on Linux. Shown is the top value 'RES' measured every 5 seconds for a R dense to sparse conversion [red], the rusty_sparse_mmx Rust process for the same data [blue] and the loading of the sparse matrix into R [black]. The file GSE166895_postQC_mRNAraw_FL-FBM-CB.csv from \cite{humdata} was used for these measurements
