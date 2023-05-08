@@ -1,5 +1,5 @@
 [package]
-name = "dense2sparse"
+name = "rusty_sparse_mmx"
 version = "0.1.0"
 edition = "2021"
 
