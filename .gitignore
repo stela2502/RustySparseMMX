@@ -1,6 +1,4 @@
 *.R
-*.svg
 *.txt
 *.pdf
-*.png
 /target
