@@ -1,3 +1,5 @@
+[![Rust](https://github.com/stela2502/RustySparseMMX/actions/workflows/rust.yml/badge.svg)](https://github.com/stela2502/RustySparseMMX/actions/workflows/rust.yml)
+
 # RustySparseMMX
 
 A rust program to convert a dense ',' or '\t' separated table to the Matrix Marked spasre matrix format.
