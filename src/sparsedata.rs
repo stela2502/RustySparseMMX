@@ -478,3 +478,25 @@ impl SparseData{
 	}
 	
 }
+
+#[cfg(test)]
+mod tests {
+	use crate::sparsedata::SparseData;
+
+	#[test]
+	fn check_add() {
+		let mut data = SparseData::new();
+
+		let header = vec![ "", "cell1", "cell2", "cell3" ];
+		data.add_header( header );
+		assert!( data.content() == [0,3,0], "{:?} == {:?}", data.content(), [0,3,0] );
+
+		data = SparseData::new();
+		data.add_data( vec!["", "cell1", "cell2", "cell3"]);
+		data.add_data( vec![ "gene1", "0", "1", "0" ] );
+		data.add_data( vec![ "gene2", "1", "0", "0" ] );
+		data.add_data( vec![ "gene3", "3", "0", "1" ] );
+		assert!( data.content() == [3,3,4], "{:?} == {:?}", data.content(), [0,3,0] );
+	}
+
+}
