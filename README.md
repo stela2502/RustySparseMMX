@@ -6,6 +6,8 @@ A rust program to convert a dense ',' or '\t' separated table to the Matrix Mark
 Only integer values are supported. Float values as provided by some databases are converted to ints.
 
 A preprint of this is available on [ResearchGate](https://www.researchgate.net/publication/368667970_dense2sparse_a_Rust_program_to_convert_published_SingleCell_dense_matrices_to_the_MatrixMarket_format)
+
+
 # Usage
 
 ```
