@@ -18,13 +18,14 @@ use regex::Regex;
 
 
 
-/// Convert a dense csv table to the MatrixMarket format used by 10x CellRanger.
-/// Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
-/// To circumvent problems while importing into Scanpy the files are created in a folder named 'filtered_feature_bc_matrix'.
+/// Convert all csv and csv.gz files in a directory to the MatrixMarket format used by 10x CellRanger.
+/// Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz. 
+/// A set of these files will be created for each of the csv or csv.gz files in a new directory each.
+/// To circumvent problems while importing into Scanpy the files are created in a new sub-folder named 'filtered_feature_bc_matrix'.
 #[derive(Parser)]
 #[clap(version = "0.1.0", author = "Stefan L. <stefan.lang@med.lu.se>")]
 struct Opts {
-    /// the input input path
+    /// the input directory
     #[clap(short, long)]
     ipath: String,
     /// the column separator str

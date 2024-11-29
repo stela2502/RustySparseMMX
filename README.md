@@ -12,19 +12,22 @@ A preprint of this is available on [ResearchGate](https://www.researchgate.net/p
 rusty_sparse_mmx -h
 rusty_sparse_mmx 0.1.0
 Stefan L. <stefan.lang@med.lu.se>
-Convert a dense csv table to the MatrixMarket format used by 10x CellRanger. Meaning the outfiles
-are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz. To circumvent problems while importing into
-Scanpy the files are created in a folder named 'filtered_feature_bc_matrix'
+Convert all csv and csv.gz files in a directory to the MatrixMarket format used by 10x CellRanger.
+Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz. A set of these files
+will be created for each of the csv or csv.gz files in a new directory each. To circumvent problems
+while importing into Scanpy the files are created in a new sub-folder named
+'filtered_feature_bc_matrix'
 
 USAGE:
-    rusty_sparse_mmx [OPTIONS] --ipath <IPATH>
+    dense2sparse [OPTIONS] --ipath <IPATH>
 
 OPTIONS:
     -h, --help                     Print help information
-    -i, --ipath <IPATH>            the input input path
+    -i, --ipath <IPATH>            the input directory
     -s, --sep <SEP>                the column separator str [default: ,]
     -t, --transpose <TRANSPOSE>    transpose the data [default: false]
     -V, --version                  Print version information
+
 ```
 
 
