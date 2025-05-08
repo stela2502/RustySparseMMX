@@ -19,9 +19,9 @@ use regex::Regex;
 
 
 /// Convert chimeric mess of a sparse table to CellRangers MatrixMarket format.
-/// The in data is a merge of barcodes and features info followed by the expression value for the specific combination.
+/// The in data is a merge of barcodes and features, followed by the expression value for the specific combination.
 /// In other words a total waste of storage space.
-/// Meaning the outfiles are matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
+/// This tool tries to convert the mess into a 10x conform triplet of matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
 /// To circumvent problems while importing into Scanpy the files are created in a folder named 'filtered_feature_bc_matrix'.
 #[derive(Parser)]
 #[clap(version = "0.1.0", author = "Stefan L. <stefan.lang@med.lu.se>")]
